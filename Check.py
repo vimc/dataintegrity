@@ -47,7 +47,7 @@ WHERE
 
 
 def get_table(tablename, dbname):
-    rows, columns, primary_key = None, None, None
+    rows, primary_key = None, None
     with connect(dbname) as conn:
         with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
             cur.execute(select_primary_key.format(tablename=tablename))
@@ -57,20 +57,13 @@ def get_table(tablename, dbname):
                                                                                           primary_key=primary_key))
             rows = cur.fetchall()
 
-            cur.execute(
-                """SELECT COLUMN_NAME FROM information_schema.columns WHERE table_schema = 'public' AND table_name = '{tablename}'"""
-                .format(tablename=tablename))
-            columns = cur.fetchall()
-
     rows = {r[primary_key]: r for r in rows}
-    return [rows, columns]
+    return rows
 
 
 def check_table(tableName):
-    old = get_table(tableName, "montaguold")
-    new = get_table(tableName, "montagunew")
-    oldrows = old[0]
-    newrows = new[0]
+    oldrows = get_table(tableName, "montaguold")
+    newrows = get_table(tableName, "montagunew")
     for k in oldrows.keys():
         if not oldrows[k] == newrows[k]:
             print("Change in row {rowid}, was {old}, now {new}".format(rowid=k, old=oldrows[k], new=newrows[k]))
