@@ -1,0 +1,9 @@
+{
+  "host": "localhost",
+  "port": 5434,
+  "user": "vimc",
+  "password": "changeme",
+  "original_db_name": "montaguold",
+  "new_db_name": "montagu"
+
+}
