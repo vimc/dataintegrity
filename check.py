@@ -52,10 +52,11 @@ def check_table(table_name):
     original_rows = get_table(table_name, database_settings["original_db_name"])
     new_rows = get_table(table_name, database_settings["new_db_name"])
     for k in original_rows.keys():
-        if not original_rows[k] == new_rows[k]:
-            # only do this more expensive equality check if the first one fails
-            if not utils.ARRAYEQUAL(original_rows[k], new_rows[k]):
-                print("Change in row {rowid}: was {old}, now {new}".format(rowid=k, old=original_rows[k], new=new_rows[k]))
+        original = original_rows[k]
+        new = new_rows[k]
+
+        if original[k] != new[k] and (not utils.array_equal(original, new)):
+            print("Change in row {rowid}: was {old}, now {new}".format(rowid=k, old=original_rows[k], new=new_rows[k]))
 
 
 def get_tables():
